@@ -25,10 +25,16 @@ public class JwtParser {
 	
 	/**
 	 * Using this constructor, the default accounts.organicity.eu certificate is used
+	 * @see: https://stackoverflow.com/questions/2653322/getresourceasstream-not-loading-resource-in-webapp
 	 */
 	public JwtParser() {
-		// https://stackoverflow.com/questions/2653322/getresourceasstream-not-loading-resource-in-webapp
+		// This is needed within the Wildfly
 		this.is = Thread.currentThread().getContextClassLoader().getResourceAsStream("/accounts.organicity.eu.cert.pem");
+
+		// This is needed within Eclipse or within a JAR
+		if(this.is == null) {
+			this.is = this.getClass().getResourceAsStream("/accounts.organicity.eu.cert.pem");
+		}
 	}
 
 	/**
