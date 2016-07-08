@@ -10,7 +10,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 
 /**
@@ -25,10 +24,11 @@ public class JwtParser {
 	InputStream is;
 	
 	/**
-	 * Using this constructor, the default accounts.organicity.eu certifcate is used
+	 * Using this constructor, the default accounts.organicity.eu certificate is used
 	 */
 	public JwtParser() {
-		this.is = getClass().getResourceAsStream("/accounts.organicity.eu.cert.pem");
+		// https://stackoverflow.com/questions/2653322/getresourceasstream-not-loading-resource-in-webapp
+		this.is = Thread.currentThread().getContextClassLoader().getResourceAsStream("/accounts.organicity.eu.cert.pem");
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class JwtParser {
 			X509Certificate certificate = (X509Certificate) f.generateCertificate(this.is);
 			pk = certificate.getPublicKey();
 		} catch (CertificateException e) {
-			e.printStackTrace();
+			System.err.println("CERTIFICATE NOT FOUND");
 		}
 		return pk;
 	}
@@ -62,10 +62,10 @@ public class JwtParser {
 	 * 
 	 * @param jwt A BASE64 encoded JWT
 	 * @return A Claims object, which can be used 
-	 * 
-	 * @throws ExpiredJwtException If the JWT is expired, this exception is thrown
+	 * @throws Exception If the JWT is not valid or expired, this exception is thrown
 	 */
-	public Claims parseJWT(String jwt) throws ExpiredJwtException{
-		return Jwts.parser().setSigningKey(getPublicKeyFromCert()).parseClaimsJws(jwt).getBody();
+	public Claims parseJWT(String jwt) throws Exception{
+		PublicKey pk = getPublicKeyFromCert();
+		return Jwts.parser().setSigningKey(pk).parseClaimsJws(jwt).getBody();
 	}
 }

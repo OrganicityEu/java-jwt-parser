@@ -23,7 +23,7 @@ public class TestJwtParser {
 
 			System.out.println("Component realm: " + claims.get("aud"));
 			
-		} catch (ExpiredJwtException e) {
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
 
