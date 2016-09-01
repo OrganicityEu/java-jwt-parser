@@ -1,7 +1,6 @@
 package eu.organicity;
 import eu.organicity.JwtParser;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 
 public class TestJwtParser {
 	public static void main(String[] args) {

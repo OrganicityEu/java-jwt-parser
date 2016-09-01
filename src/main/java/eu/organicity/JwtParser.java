@@ -35,6 +35,10 @@ public class JwtParser {
 		if(this.is == null) {
 			this.is = this.getClass().getResourceAsStream("/accounts.organicity.eu.cert.pem");
 		}
+		
+		if(this.is == null) {
+			System.out.println("Certificate not found!");
+		}
 	}
 
 	/**
